@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#000;">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>IP Core HUNT-TCU v1.2</title>
+    <style>
+        html,body{margin:0;padding:0;width:100vw;height:100vh;background:#000;color:#0ff;font-family:monospace;overflow:hidden;box-sizing:border-box;}
+        #ly{position:absolute;top:0;left:0;width:100vw;height:100vh;display:flex;flex-direction:column;padding:20px;box-sizing:border-box;justify-content:space-between;}
+        header{border-bottom:2px dashed #0ff;padding-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+        .t1{font-size:32px;font-weight:900;color:#fff;text-shadow:0 0 10px #0ff,0 0 20px #0ff;margin:0;}
+        .st{display:flex;gap:15px;font-size:12px;color:#0cc;margin-top:5px;}
+        .tb{display:flex;gap:5px;margin:10px 0;}
+        .btn{background:#080808;border:1px solid #005555;color:#00cccc;padding:6px 12px;font-size:11px;cursor:pointer;font-weight:bold;}
+        .btn.active{background:rgba(0,255,255,0.15);border-color:#0ff;color:#0ff;}
+        .n-btn{background:transparent;border:2px solid #f0f;color:#f0f;padding:8px 16px;cursor:pointer;font-weight:bold;font-family:monospace;}
+        .gd{display:grid;grid-template-columns:1.35fr 1fr;gap:15px;flex-grow:1;height:68vh;}
+        .pl{border:1px solid #0ff;background:#010507;padding:10px;position:relative;overflow:hidden;}
+        #cv{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;z-index:1;}
+        .tm{background:rgba(0,4,6,0.95);border:1px dashed #f0f;padding:15px;font-size:11px;color:#0cc;display:flex;flex-direction:column;gap:5px;height:100%;box-sizing:border-box;justify-content:center;position:relative;z-index:2;}
+        .ln{display:flex;justify-content:space-between;border-bottom:1px solid #003333;}
+        .lb{font-weight:bold;color:#0ff;}
+        .flag-panel{display:flex;gap:10px;}
+        .flag-us{width:26px;height:14px;background:#b31942;position:relative;border:1px solid #555;}
+        .flag-us::before{content:'';position:absolute;width:12px;height:8px;background:#0a3161;top:0;left:0;}
+        .flag-es{width:26px;height:14px;background:#c60b1e;display:flex;flex-direction:column;border:1px solid #555;}
+        .flag-es-mid{height:34%;background:#fbe106;}
+        .flag-es-top,.flag-es-bot{height:33%;}
+    </style>
+</head>
+<body>
+    <div id="ly">
+        <header>
+            <div>
+                <h1 class="t1">📥 IP Core HUNT-TCU v1.2 FIRST QUANTUM PROCESSOR OF OUR ERA</h1>
+                <div class="st"><div>CORE: HUNT-TCU v1.2</div><div>TEMP: 24.00 °C</div><div>INFERENCE: 60M TPM</div></div>
+            </div>
+            <div style="display:flex;gap:15px;align-items:center;">
+                <button class="n-btn" id="ab" onclick="tkM()">🎼 MAHLER AUDIO (60s)</button>
+                <div class="flag-panel">
+                    <div class="flag-us" title="United States"></div>
+                    <div class="flag-es" title="Spain"><div class="flag-es-top"></div><div class="flag-es-mid"></div><div class="flag-es-bot"></div></div>
+                </div>
+            </div>
+        </header>
+        <div class="tb">
+            <button class="btn active" id="b1" onclick="sP(1)">📊 01_CORE</button>
+            <button class="btn" id="b2" onclick="sP(2)">📐 02_LAYOUT</button>
+            <button class="btn" id="b3" onclick="sP(3)">🔮 03_WAVE</button>
+            <button class="btn" id="b4" onclick="sP(4)">📺 04_ASML</button>
+            <button class="btn" id="b5" onclick="sP(5)">🚀 05_TEASER</button>
+            <button class="btn" id="b6" onclick="sP(6)">🌌 06_LAUNCH</button>
+        </div>
+        <div class="gd">
+            <div class="pl"><canvas id="cv"></canvas></div>
+            <div class="pl" style="border-color:#f0f;"><div class="tm">
+                <div class="ln"><span class="lb">STAGE:</span><span id="m1">01_CONCEPT_LOGIC</span></div>
+                <div class="ln"><span class="lb">YIELD:</span><span id="m2">Yield 100% Guaranteed</span></div>
+                <div class="ln"><span class="lb">ENV:</span><span id="m3">24.00 °C LOCKED</span></div>
+                <div class="ln"><span class="lb">SPEED:</span><span id="m4">60,000,000 TPM SPEED</span></div>
+                <div class="ln"><span class="lb">CLK:</span><span id="m5">0.00 ms ABSOLUTE ZERO</span></div>
+                <div class="ln" style="color:#f0f;"><span class="lb">NODE 0:</span><span>(0,10) LOCKED</span></div>
+                <div class="ln" style="color:#f0f;"><span class="lb">NODE 1:</span><span>(1,8) SYNCED</span></div>
+                <div class="ln" style="color:#f0f;"><span class="lb">NODE 2:</span><span>(2,6) ETCHED</span></div>
+                <div class="ln" style="color:#f0f;"><span class="lb">NODE 3:</span><span>(3,4) VALID</span></div>
+                <div class="ln" style="color:#f0f;"><span class="lb">NODE 4:</span><span style="color:#0ff;font-weight:bold;">(4,2) COMPLETE</span></div>
+            </div></div>
+        </div>
+        <footer style="font-size:10px;opacity:0.4;text-align:center;">MASTER OPERATOR: Richard | UNIFIED ENGINE ACCESS ACTIVE</footer>
+    </div>
+    <script>
+        const c=document.getElementById('cv'),x=c.getContext('2d');
+        let f=0,pX=-200,ac=null,pl=false,mS=null,tm=null,ph=1;
+        const D={
+            1:{s:"01_LOGIC",y:"Yield 100% Ok",e:"24°C Target",c:"60M TPM",l:"0.00ns CLK"},
+            2:{s:"02_LAYOUT",y:"DRC Passed",e:"14 Metal Layers",c:"4.2B Gates",l:"0.00% Noise"},
+            3:{s:"03_MANIFEST",y:"99.999% Si-28",e:"Phonon Null",c:"Isotope Active",l:"Phase Locked"},
+            4:{s:"04_ASML",y:"EUV 3D Beam",e:"ASML Stepper",c:"0.00nm Delta",l:"Grid Active"},
+            5:{s:"05_TEASER",y:"Market Ready",e:"Teaser Active",c:"Symphonic Core",l:"Deploy Ready"},
+            6:{s:"06_LAUNCH",y:"PROD READY",e:"Silicon Core",c:"Hunt Matrix",l:"Suite Locked"}
+        };
+        function sP(p){ph=p;document.querySelectorAll('.btn').forEach((b,i)=>b.classList.toggle('active',i+1===p));pX=-200;document.getElementById('m1').textContent=D[p].s;document.getElementById('m2').textContent=D[p].y;document.getElementById('m3').textContent=D[p].e;document.getElementById('m4').textContent=D[p].c;document.getElementById('m5').textContent=D[p].l;}
+        function rz(){c.width=c.clientWidth;c.height=c.clientHeight;}
+        window.addEventListener('resize',rz);rz();
+        function dr(){
+            f+=0.045;x.fillStyle='#000';x.fillRect(0,0,c.width,c.height);
+            const cx=c.width/2,cy=c.height/2,s=28;
+            if(ph===3){
+                x.lineWidth=1.5;x.strokeStyle='rgba(255,0,255,0.3)';
+                for(let i=-12;i<=12;i++){x.beginPath();for(let j=-12;j<=12;j++){let xV=i*30,yV=j*30,z=25*Math.sin(Math.sqrt(xV*xV+yV*yV)*0.03-f);x.lineTo(cx+(xV-yV)*0.866,cy+(xV+yV)*0.5-z);}x.stroke();}
+                let a=f*0.8,x1=80*Math.cos(a),y1=40*Math.sin(a),x2=80*Math.cos(a+Math.PI),y2=40*Math.sin(a+Math.PI);
+                x.fillStyle='#0ff';x.beginPath();x.arc(cx+x1,cy+y1,9,0,Math.PI*2);x.fill();x.fillStyle='#fff';x.font='10px monospace';x.fillText("Si-28_A",cx+x1+12,cy+y1+4);
+                x.fillStyle='#f0f';x.beginPath();x.arc(cx+x2,cy+y2,9,0,Math.PI*2);x.fill();x.fillText("Si-28_B",cx+x2+12,cy+y2+4);
+            }else{
+                x.strokeStyle=(ph===2)?'#08f':(ph===4)?'#0f0':'#0ff';x.lineWidth=1;
+                for(let i=-s;i<=s;i++){x.beginPath();for(let j=-s;j<=s;j++){let xV=i*18,yV=j*18,d=Math.sqrt(xV*xV+yV*yV),z=40*Math.sin(d*0.015-f)/(1+d*0.002);let sX=cx+(xV-yV)*0.866,sY=cy+(xV+yV)*0.5-z;if(ph>=5){sX+=Math.sin(yV*0.02+f)*10;sY+=Math.cos(xV*0.02+f)*5;}if(j===-s)x.moveTo(sX,sY);else x.lineTo(sX,sY);}x.stroke();}
+                pX+=1.8;if(pX>300)pX=-200;
+                let pY=(ph>=5)?Math.sin(pX*0.05)*40:0,pD=Math.sqrt(pX*pX+pY*pY),pZ=40*Math.sin(pD*0.015-f)/(1+pD*0.002);let sX=cx+(pX-pY)*0.866,sY=cy+(pX+pY)*0.5-pZ;if(ph>=5){sX+=Math.sin(pY*0.02+f)*10;sY+=Math.cos(pX*0.02+f)*5;}
+                x.fillStyle='#fff';x.beginPath();x.arc(sX,sY,6,0,Math.PI*2);x.fill();x.fillStyle='#f0f';x.beginPath();x.arc(sX,sY,14,0,Math.PI*2);x.fill();
+            }
+            requestAnimationFrame(dr);
+        }
+        function tkM(){
+            if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
+            const b=document.getElementById('ab');
+            if(!pl){
+                ac.resume();pl=true;b.textContent="⏹ STOP";
+                mS=setInterval(()=>{if(!pl)return;[130.8,261.6,349.2].forEach((fr,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sawtooth';o.frequency.setValueAtTime(fr,ac.currentTime);g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(0.04,ac.currentTime+1);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+3);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+4);});},4000);
+                tm=setTimeout(()=>{tkM();},60000);
+            }else{clearInterval(mS);clearTimeout(tm);pl=false;b.textContent="🎼 MAHLER AUDIO (60s)";}
+        }
+        dr();
+    </script>
+</body>
+</html>
